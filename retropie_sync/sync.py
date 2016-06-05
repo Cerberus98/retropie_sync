@@ -17,7 +17,7 @@ def _status_int(status):
 
 def _read_functional_line(registry, line):
     elem = line.split(',')
-    registry[elem[0]] = {"Full Name": full_name,
+    registry[elem[0]] = {"Full Name": elem[1],
                          "RP1": STATUSES["ok"],
                          "RP2": STATUSES["ok"],
                          "RP3": STATUSES["ok"],
@@ -46,7 +46,7 @@ def _read_full_line(registry, line):
 
     (rom, full_name, rp1, rp2, rp3, parent, bios,
      samples, notes, year, publisher) = elem
-    registry[rom] = {"Full Name": full_name,
+    registry[rom] = {"Full Name": eleu,
                      "RP1": _status_int(rp1),
                      "RP2": _status_int(rp2),
                      "RP3": _status_int(rp3),
@@ -94,7 +94,7 @@ def sync(input_csv, run_path):
         for f in files:
             file_parts = f.split('.')
             if file_parts[0] in registry:
-                click.echo(os.path.join(root, f))
+                print os.path.join(root, f)
                 matched += 1
         scanned += len(files)
     return len(registry), scanned, matched
