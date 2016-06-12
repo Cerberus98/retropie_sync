@@ -4,6 +4,7 @@
 # emulators. Additionally, it could scrape all the gdoc spreadsheets
 # itself.
 import os
+import shutil
 import sys
 
 STATUSES = {"untested": 0, "ok": 1, "doesn't work": 2, "has issues": 3, '': 4}
@@ -46,7 +47,7 @@ def _read_full_line(registry, line):
 
     (rom, full_name, rp1, rp2, rp3, parent, bios,
      samples, notes, year, publisher) = elem
-    registry[rom] = {"Full Name": eleu,
+    registry[rom] = {"Full Name": elem,
                      "RP1": _status_int(rp1),
                      "RP2": _status_int(rp2),
                      "RP3": _status_int(rp3),
@@ -86,15 +87,27 @@ def load_csv(input_csv):
     return registry
 
 
+def _make_path(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        pass
+
+
 def sync(input_csv, run_path):
     registry = load_csv(input_csv)
     scanned, matched = 0, 0
 
+    for path in ["has_issues", "unsupported"]:
+        _make_path(os.path.join(run_path, path))
+
     for root, subdirs, files in os.walk(run_path):
         for f in files:
             file_parts = f.split('.')
-            if file_parts[0] in registry:
-                print os.path.join(root, f)
-                matched += 1
+            if os.path.exists(os.path.join(run_path, f)):
+                if file_parts[0] in registry:
+                    matched += 1
+                else:
+                    shutil.move(f, os.path.join(run_path, "unsupported"))
         scanned += len(files)
     return len(registry), scanned, matched
