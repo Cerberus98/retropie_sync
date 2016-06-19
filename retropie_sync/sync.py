@@ -102,6 +102,8 @@ def sync(input_csv, run_path):
         _make_path(os.path.join(run_path, path))
 
     for root, subdirs, files in os.walk(run_path):
+        # Recurse all subdirs and be able to move stuff on subsequent
+        # runs out to "working" or into other sub-dirs
         for f in files:
             file_parts = f.split('.')
             if os.path.exists(os.path.join(run_path, f)):

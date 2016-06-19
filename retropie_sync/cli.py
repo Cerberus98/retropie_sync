@@ -24,6 +24,17 @@ def scan(ctxt, input_csv, scan_path):
     click.echo("Files scanned: %d" % scanned)
     click.echo("Files matched: %d" % matched)
 
+# Commands for each of the emulators
+# Store the google doc IDs in a separate file
+# Command line option to indicate which RP model you're filtering for
+
+# Get the doc curl -ik https://docs.google.com/spreadsheets/d/1GaqIIoiWbzKHwZ52S2xCSDQXILo81Ls1mHK6czKGAtM/edit#gid=1671511927?fornat=csv
+@click.command()
+@click.argument("doc_id")
+@click.pass_context
+def fetch_csv(ctxt, doc_id):
+    total, scanned, matched = sync.sync(input_csv, scan_path)
+
 
 def main():
     arcade(obj={})
